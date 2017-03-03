@@ -92,16 +92,18 @@ class LearningAgent(Agent):
         # Set the agent state and default action
         self.state = state
         self.next_waypoint = self.planner.next_waypoint()
-        action = None
 
-        ########### 
-        ## TO DO ##
-        ###########
         # When not learning, choose a random action
         # When learning, choose a random action with 'epsilon' probability
         #   Otherwise, choose an action with the highest Q-value for the current state
- 
-        return action
+        num_actions = len(self.valid_actions)
+        if self.learning:
+            if random.random() * 100 < epsilon:
+                return self.valid_actions[random.randrange(num_actions)]
+            else:
+                pass
+        else:
+            return self.valid_actions[random.randrange(num_actions)]
 
     def learn(self, state, action, reward):
         """ The learn function is called after the agent completes an action and
@@ -163,14 +165,14 @@ def run():
     #   display      - set to False to disable the GUI if PyGame is enabled
     #   log_metrics  - set to True to log trial and simulation results to /logs
     #   optimized    - set to True to change the default log file name
-    sim = Simulator(env)
+    sim = Simulator(env, update_delay=0.01, log_metrics=True)
     
     ##############
     # Run the simulator
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    sim.run()
+    sim.run(n_test=10)
 
 
 if __name__ == '__main__':
