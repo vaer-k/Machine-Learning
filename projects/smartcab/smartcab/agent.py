@@ -19,6 +19,7 @@ class LearningAgent(Agent):
         self.Q = dict()           # Create a Q-table which will be a dictionary of tuples
         self.epsilon = epsilon    # Random exploration factor
         self.alpha = alpha        # Learning factor
+        self.trial_num = 0
 
         ###########
         ## TO DO ##
@@ -40,10 +41,20 @@ class LearningAgent(Agent):
         # Update additional class parameters as needed
         # If 'testing' is True, set epsilon and alpha to 0
 
+        self.trial_num += 1
+
         if testing:
             self.epsilon = self.alpha = 0.0
         else:
-            self.epsilon *= 0.90
+            # self.epsilon -= 0.05
+            # self.epsilon = math.pow(self.alpha, self.trial_num)
+            # self.epsilon = 1 / math.pow(self.trial_num, 2)
+            # self.epsilon = math.exp(-1 * self.alpha * self.trial_num)
+            # self.epsilon = math.cos(self.alpha * self.trial_num)
+            # self.epsilon -= 0.001 * self.trial_num
+            # self.epsilon -= 0.0001 * self.trial_num
+            self.epsilon -= 0.00001 * self.trial_num
+            # self.epsilon -= 0.000001 * self.trial_num
 
         return None
 
@@ -64,6 +75,7 @@ class LearningAgent(Agent):
         state = (waypoint,
                  inputs['light'],
                  inputs['oncoming'],
+                 # deadline,
                  )
 
         return state
@@ -127,7 +139,7 @@ class LearningAgent(Agent):
         # When learning, implement the value iteration update rule
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
 
-        self.Q[state][action] = reward
+        self.Q[state][action] = ((1 - self.alpha) * self.Q[state][action]) + (self.alpha * reward)
 
         return
 
@@ -178,7 +190,7 @@ def run():
     #   display      - set to False to disable the GUI if PyGame is enabled
     #   log_metrics  - set to True to log trial and simulation results to /logs
     #   optimized    - set to True to change the default log file name
-    sim = Simulator(env, update_delay=0.01, log_metrics=True)
+    sim = Simulator(env, update_delay=0, log_metrics=True, optimized=True, display=False)
     
     ##############
     # Run the simulator
