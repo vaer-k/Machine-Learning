@@ -122,8 +122,8 @@ class LearningAgent(Agent):
             if random.random() * 100 < self.epsilon:
                 return random.choice(self.valid_actions)
             else:
-                state = self.Q[state]
                 maxQ = self.get_maxQ(state)
+                state = self.Q[state]
                 return random.choice([action for action, q in state.iteritems() if q == maxQ])
         else:
             return random.choice(self.valid_actions)
@@ -190,7 +190,7 @@ def run():
     #   display      - set to False to disable the GUI if PyGame is enabled
     #   log_metrics  - set to True to log trial and simulation results to /logs
     #   optimized    - set to True to change the default log file name
-    sim = Simulator(env, update_delay=0, log_metrics=False, optimized=False, display=False)
+    sim = Simulator(env, update_delay=0, log_metrics=True, optimized=True, display=False)
     
     ##############
     # Run the simulator
